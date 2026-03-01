@@ -1,0 +1,862 @@
+{
+  "openapi": "2.8.0",
+  "info": {
+    "title": "XTE Apis",
+    "author": "D2:业",
+    "version": "v1.0.0",
+    "description": "Simple and easy to use API."
+  },
+  "servers": [
+    {
+      "url": "https://api.xte.web.id"
+    }
+  ],
+  "tags": [
+    { "name": "AI" },
+    { "name": "Anime" },
+    { "name": "Downloader" },
+    { "name": "Image" },
+    { "name": "Stalk" },
+    { "name": "Tempmail" },
+    { "name": "Tools" },
+    { "name": "Search" },
+    { "name": "maker" },
+    { "name": "News" },
+    { "name": "Religi" }
+  ],
+  "paths": {
+    "/v1/ai/gpt-nano": {
+      "get": {
+        "summary": "GPT-4.1 Nano Chat",
+        "description": "Chatbot menggunakan model GPT-4.1 Nano yang ringan dan cepat.",
+        "tags": ["AI"],
+        "parameters": [
+          { "name": "query", "in": "query", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/ai/askai": {
+      "get": {
+        "summary": "AskAi",
+        "description": "Layanan tanya jawab berbasis ChatGPT 4o.",
+        "tags": ["AI"],
+        "parameters": [{ "name": "q", "in": "query", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/ai/copilot": {
+      "get": {
+        "summary": "Copilot Chat",
+        "description": "Interaksi dengan Microsoft Copilot untuk mendapatkan jawaban beserta referensi/citations.",
+        "tags": ["AI"],
+        "parameters": [
+          { "name": "message", "in": "query", "required": true, "schema": { "type": "string" } },
+          { "name": "model", "in": "query", "required": false, "schema": { "type": "string", "enum": ["default", "think-deeper", "gpt-5"], "default": "default" } }
+        ],
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/ai/copilot-voice": {
+      "get": {
+        "summary": "Copilot Voice AI",
+        "description": "Mendapatkan jawaban AI dalam format teks dan base64 audio.",
+        "tags": ["AI"],
+        "parameters": [{ "name": "text", "in": "query", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/v1/ai/deepai": {
+      "get": {
+        "summary": "DeepAI Chat Bot",
+        "description": "Chatting dengan AI menggunakan model standard DeepAI (Bypass mode).",
+        "tags": ["AI"],
+        "parameters": [{ "name": "ask", "in": "query", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/v2/ai/text2img": {
+      "get": {
+        "summary": "AI Text to Image",
+        "description": "Mengubah teks deskripsi menjadi gambar artistik menggunakan kecerdasan buatan.",
+        "tags": ["AI"],
+        "parameters": [{ "name": "prompt", "in": "query", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Image JPEG" } }
+      }
+    },
+    "/ai/deepseek": {
+      "get": {
+        "summary": "AI DeepSeek Chat",
+        "description": "Layanan chat interaktif menggunakan model DeepSeek AI.",
+        "tags": ["AI"],
+        "parameters": [{ "name": "q", "in": "query", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/ai/notegpt": {
+      "get": {
+        "summary": "NoteGPT",
+        "description": "Chatbot berbasis GPT-4.1 Mini untuk asisten teks cepat.",
+        "tags": ["AI"],
+        "parameters": [{ "name": "q", "in": "query", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/ai/text2img": {
+      "get": {
+        "summary": "AI Text to Image",
+        "description": "Alat konversi teks menjadi gambar (Text-to-Image) versi standar.",
+        "tags": ["AI"],
+        "parameters": [{ "name": "prompt", "in": "query", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/ai/unblur": {
+      "get": {
+        "summary": "AI Photo Unblur",
+        "description": "Menjernihkan atau menghilangkan efek blur pada gambar melalui URL.",
+        "tags": ["AI"],
+        "parameters": [{ "name": "url", "in": "query", "required": true, "schema": { "type": "string", "format": "uri" } }],
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/ai/venice": {
+      "get": {
+        "summary": "Venice AI Chat",
+        "description": "Layanan chat interaktif melalui provider Venice AI.",
+        "tags": ["AI"],
+        "parameters": [{ "name": "message", "in": "query", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/v1/ai/felo": {
+      "get": {
+        "summary": "Felo AI",
+        "description": "AI yang mencari informasi secara real-time di internet dan menyertakan sumber referensi.",
+        "tags": ["AI"],
+        "parameters": [{ "name": "q", "in": "query", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/ai/writecream": {
+      "get": {
+        "summary": "WriteCream AI",
+        "description": "AI khusus untuk membantu penulisan konten dan copywriting.",
+        "tags": ["AI"],
+        "parameters": [{ "name": "q", "in": "query", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/ai/zonerai": {
+      "get": {
+        "summary": "AI Text to Image (Zonerai)",
+        "description": "Generator gambar AI dengan berbagai pilihan aspek rasio (size).",
+        "tags": ["AI"],
+        "parameters": [
+          { "name": "prompt", "in": "query", "required": true, "schema": { "type": "string" } },
+          { "name": "size", "in": "query", "required": false, "schema": { "type": "string", "default": "1024x1024", "enum": ["1024x1024", "1216x832", "1152x896", "1344x768", "1563x640", "832x1216", "896x1152", "768x1344", "640x1536"] } }
+        ],
+        "responses": { "200": { "description": "Image PNG" } }
+      }
+    },
+    "/anime/waifu": {
+      "get": {
+        "summary": "Random Waifu Image",
+        "description": "Mengambil gambar karakter 'waifu' secara acak.",
+        "tags": ["Anime"],
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/anime/otakudesu-search": {
+      "get": {
+        "summary": "Search Anime Otakudesu",
+        "description": "Mencari judul anime pada platform Otakudesu.",
+        "tags": ["Anime"],
+        "parameters": [{ "name": "query", "in": "query", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/anime/donghua-search": {
+      "get": {
+        "summary": "Search Donghua Film",
+        "description": "Mencari film atau serial Donghua (anime China).",
+        "tags": ["Anime"],
+        "parameters": [{ "name": "query", "in": "query", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/anime/donghua-detail": {
+      "get": {
+        "summary": "Detail Donghua Film",
+        "description": "Mendapatkan informasi detail mengenai konten Donghua.",
+        "tags": ["Anime"],
+        "parameters": [{ "name": "url", "in": "query", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/search/zerochan": {
+      "get": {
+        "summary": "Zerochan Image Search",
+        "description": "Mencari gambar anime di database Zerochan.",
+        "tags": ["Anime"],
+        "parameters": [{ "name": "q", "in": "query", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/search/zerochan-detail": {
+      "get": {
+        "summary": "Zerochan Detail",
+        "description": "Mengambil gambar kualitas HD dari Zerochan berdasarkan ID.",
+        "tags": ["Anime"],
+        "parameters": [{ "name": "id", "in": "query", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/v1/download/douyin": {
+      "get": {
+        "summary": "Douyin Downloader",
+        "description": "Download video TikTok China (Douyin) tanpa watermark dengan teknologi bypass sign SHA256.",
+        "tags": ["Downloader"],
+        "parameters": [{ "name": "url", "in": "query", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/v1/download/sfile-dl": {
+      "get": {
+        "summary": "Sfile Mobi Downloader",
+        "description": "Mendapatkan link download langsung (Direct Link) dan metadata lengkap dari Sfile.",
+        "tags": ["Downloader"],
+        "parameters": [{ "name": "url", "in": "query", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/v1/download/allinone": {
+      "get": {
+        "summary": "Universal Downloader",
+        "description": "Downloader sakti yang mendukung berbagai platform (IG, FB, TikTok, YT, dll) dengan teknik enkripsi AES-256-CBC.",
+        "tags": ["Downloader"],
+        "parameters": [{ "name": "url", "in": "query", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/v1/download/gdrive": {
+      "get": {
+        "summary": "Google Drive Downloader",
+        "description": "Mendapatkan link download langsung dari URL Google Drive (Public).",
+        "tags": ["Downloader"],
+        "parameters": [{ "name": "url", "in": "query", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/v1/download/gitclone": {
+      "get": {
+        "summary": "GitHub Repository Downloader",
+        "description": "Download repository GitHub dalam bentuk file ZIP secara langsung.",
+        "tags": ["Downloader"],
+        "parameters": [{ "name": "url", "in": "query", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/v1/download/xv": {
+      "get": {
+        "summary": "Public Video Downloader (Xham/XV)",
+        "description": "Downloader video untuk platform publik (Xhamster/XVideos).",
+        "tags": ["Downloader"],
+        "parameters": [{ "name": "url", "in": "query", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/download/applemusic": {
+      "get": {
+        "summary": "Apple Music Downloader",
+        "description": "Mengunduh lagu dari platform Apple Music.",
+        "tags": ["Downloader"],
+        "parameters": [{ "name": "url", "in": "query", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/download/capcut": {
+      "get": {
+        "summary": "CapCut Downloader",
+        "description": "Mengunduh video template atau hasil editing dari CapCut.",
+        "tags": ["Downloader"],
+        "parameters": [{ "name": "url", "in": "query", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/download/fbdown": {
+      "get": {
+        "summary": "Facebook Video Downloader",
+        "description": "Pengunduh video dari platform Facebook.",
+        "tags": ["Downloader"],
+        "parameters": [{ "name": "url", "in": "query", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/download/mediafire": {
+      "get": {
+        "summary": "Mediafire Downloader",
+        "description": "Mendapatkan link download dan metadata dari file Mediafire.",
+        "tags": ["Downloader"],
+        "parameters": [{ "name": "url", "in": "query", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/download/pinterest": {
+      "get": {
+        "summary": "Pinterest Downloader",
+        "description": "Mengunduh foto atau video dari Pinterest.",
+        "tags": ["Downloader"],
+        "parameters": [{ "name": "url", "in": "query", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/v1/download/tstiker": {
+      "get": {
+        "summary": "Telegram Sticker Downloader",
+        "description": "Mengunduh paket stiker dari Telegram.",
+        "tags": ["Downloader"],
+        "parameters": [{ "name": "url", "in": "query", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/download/soundcloud": {
+      "get": {
+        "summary": "SoundCloud Downloader",
+        "description": "Mengunduh trek musik dari SoundCloud.",
+        "tags": ["Downloader"],
+        "parameters": [{ "name": "url", "in": "query", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/download/spotify": {
+      "get": {
+        "summary": "Spotify Downloader",
+        "description": "Mengunduh lagu dari Spotify ke format MP3 (Output Biner).",
+        "tags": ["Downloader"],
+        "parameters": [{ "name": "url", "in": "query", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "File MP3" } }
+      }
+    },
+    "/download/terabox": {
+      "get": {
+        "summary": "Terabox Downloader",
+        "description": "Downloader file yang tersimpan di penyimpanan awan Terabox.",
+        "tags": ["Downloader"],
+        "parameters": [{ "name": "url", "in": "query", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/download/tiktok": {
+      "get": {
+        "summary": "TikTok Downloader",
+        "description": "Download video TikTok tanpa watermark.",
+        "tags": ["Downloader"],
+        "parameters": [{ "name": "url", "in": "query", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/download/videy": {
+      "get": {
+        "summary": "Videy.co Video Downloader",
+        "description": "Pengunduh video dari layanan hosting Videy.co.",
+        "tags": ["Downloader"],
+        "parameters": [{ "name": "url", "in": "query", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/download/xnxx": {
+      "get": {
+        "summary": "Xnxx Video Downloader",
+        "description": "Downloader video dari XNXX dengan pilihan kualitas tinggi/rendah.",
+        "tags": ["Downloader"],
+        "parameters": [
+          { "name": "url", "in": "query", "required": true, "schema": { "type": "string" } },
+          { "name": "quality", "in": "query", "schema": { "type": "string", "enum": ["high", "low"] } }
+        ],
+        "responses": { "200": { "description": "Video MP4" } }
+      }
+    },
+    "/download/ytmp3": {
+      "get": {
+        "summary": "YouTube MP3 Downloader",
+        "description": "Konversi dan unduh audio video YouTube ke format MP3.",
+        "tags": ["Downloader"],
+        "parameters": [{ "name": "url", "in": "query", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/v2/download/ytmp4": {
+      "get": {
+        "summary": "YouTube MP4 Downloader",
+        "description": "Versi cepat. Cukup masukkan link, sistem otomatis memberikan kualitas video terbaik.",
+        "tags": ["Downloader"],
+        "parameters": [{ "name": "url", "in": "query", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/v1/canvas/iqc": {
+      "get": {
+        "summary": "iPhone Quote (IQC)",
+        "description": "Bikin quote estetik ala iPhone secara instan. Jam disesuaikan otomatis ke WIB dan baterai di-random biar makin real.",
+        "tags": ["Maker"],
+        "parameters": [{ "name": "teks", "in": "query", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Image PNG" } }
+      }
+    },
+    "/v1/maker/tfdana": {
+      "get": {
+        "summary": "DANA Transfer Receipt Generator",
+        "description": "Membuat struk bukti transfer DANA palsu (mockup) dengan data pengirim, tujuan, dan nominal kustom.",
+        "tags": ["Maker"],
+        "parameters": [
+          { "name": "namaPengirim", "in": "query", "required": true, "schema": { "type": "string" } },
+          { "name": "noHpPengirim", "in": "query", "required": true, "schema": { "type": "string" } },
+          { "name": "namaTujuan", "in": "query", "required": true, "schema": { "type": "string" } },
+          { "name": "noHpTujuan", "in": "query", "required": true, "schema": { "type": "string" } },
+          { "name": "nominal", "in": "query", "required": true, "schema": { "type": "string" } },
+          { "name": "timezone", "in": "query", "required": true, "schema": { "type": "string", "enum": ["WIB", "WITA", "WIT"] } }
+        ],
+        "responses": { "200": { "description": "Image PNG" } }
+      }
+    },
+    "/v1/maker/tohitam": {
+      "get": {
+        "summary": "AI Skin Darkener",
+        "description": "Transformasi warna kulit menjadi Deep/Dark secara natural. Output: Image Buffer.",
+        "tags": ["Maker"],
+        "parameters": [{ "name": "url", "in": "query", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Image JPEG" } }
+      }
+    },
+    "/v1/maker/toputih": {
+      "get": {
+        "summary": "AI Skin Whitening",
+        "description": "Mengubah warna kulit menjadi cerah/putih porselen. Output: Image Buffer.",
+        "tags": ["Maker"],
+        "parameters": [{ "name": "url", "in": "query", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Image JPEG" } }
+      }
+    },
+    "/v1/maker/tobotak": {
+      "get": {
+        "summary": "AI Bald Generator",
+        "description": "Menghapus rambut dan menciptakan kepala botak realistis. Output: Image Buffer.",
+        "tags": ["Maker"],
+        "parameters": [{ "name": "url", "in": "query", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Image JPEG" } }
+      }
+    },
+    "/v1/maker/tokacamata": {
+      "get": {
+        "summary": "AI Face Glasses",
+        "description": "Menambahkan kacamata pada wajah subjek secara presisi. Output: Image Buffer.",
+        "tags": ["Maker"],
+        "parameters": [{ "name": "url", "in": "query", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Image JPEG" } }
+      }
+    },
+    "/v1/maker/toemas": {
+      "get": {
+        "summary": "AI Golden Effect",
+        "description": "Mengubah subjek menjadi patung emas mewah. Output: Image Buffer.",
+        "tags": ["Maker"],
+        "parameters": [{ "name": "url", "in": "query", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Image JPEG" } }
+      }
+    },
+    "/v1/maker/tomasker": {
+      "get": {
+        "summary": "AI Mask Addon",
+        "description": "Memasangkan masker medis pada wajah secara otomatis. Output: Image Buffer.",
+        "tags": ["Maker"],
+        "parameters": [{ "name": "url", "in": "query", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Image JPEG" } }
+      }
+    },
+    "/image/bluearchive": {
+      "get": {
+        "summary": "Blue Archive",
+        "description": "Mengambil gambar bertema game Blue Archive secara acak.",
+        "tags": ["Image"],
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/image/loli": {
+      "get": {
+        "summary": "Loli",
+        "description": "Mengambil gambar karakter anime tipe loli (random).",
+        "tags": ["Image"],
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/image/mpls": {
+      "get": {
+        "summary": "Mpls Generator",
+        "description": "Generator kartu atau gambar khusus bertema MPLS.",
+        "tags": ["Image"],
+        "parameters": [{ "name": "url", "in": "query", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Image PNG" } }
+      }
+    },
+    "/image/testimaker": {
+      "get": {
+        "summary": "Testi Maker",
+        "description": "Membuat gambar testimoni toko online dengan dua gambar dan info kontak.",
+        "tags": ["Image"],
+        "parameters": [
+          { "name": "img1", "in": "query", "required": true, "schema": { "type": "string" } },
+          { "name": "img2", "in": "query", "required": true, "schema": { "type": "string" } },
+          { "name": "store", "in": "query", "schema": { "type": "string" } },
+          { "name": "wa", "in": "query", "schema": { "type": "string" } },
+          { "name": "tele", "in": "query", "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "Image PNG" } }
+      }
+    },
+    "/v1/stalk/teleid": {
+      "get": {
+        "summary": "Telegram Stalker",
+        "description": "Mencari ID via OSINT Database.",
+        "tags": ["Stalk"],
+        "parameters": [{ "name": "username", "in": "query", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/v1/stalk/ig": {
+      "get": {
+        "summary": "Instagram Profile Stalker",
+        "description": "Melihat informasi profil publik pengguna Instagram.",
+        "tags": ["Stalk"],
+        "parameters": [{ "name": "username", "in": "query", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/v1/stalk/discord": {
+      "get": {
+        "summary": "Discord User Lookup",
+        "description": "Mendapatkan informasi pengguna Discord berdasarkan User ID.",
+        "tags": ["Stalk"],
+        "parameters": [{ "name": "id", "in": "query", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/v1/stalk/twitter": {
+      "get": {
+        "summary": "Twitter Profile Stalker",
+        "description": "Melihat detail profil pengguna Twitter (X).",
+        "tags": ["Stalk"],
+        "parameters": [{ "name": "username", "in": "query", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/stalk/genshin": {
+      "get": {
+        "summary": "Genshin Impact Player Stalker",
+        "description": "Melihat data profil pemain game Genshin Impact melalui UID.",
+        "tags": ["Stalk"],
+        "parameters": [{ "name": "uid", "in": "query", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/stalk/gsmarena": {
+      "get": {
+        "summary": "GSMArena Search",
+        "description": "Mencari spesifikasi lengkap handphone di database GSMArena.",
+        "tags": ["Stalk"],
+        "parameters": [{ "name": "q", "in": "query", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/stalk/tiktok": {
+      "get": {
+        "summary": "TikTok Stalker",
+        "description": "Melihat statistik dan profil pengguna TikTok.",
+        "tags": ["Stalk"],
+        "parameters": [{ "name": "username", "in": "query", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/stalk/tiktok-v2": {
+      "get": {
+        "summary": "TikTok Stalker V2",
+        "description": "Versi alternatif (direct) untuk stalking profil TikTok.",
+        "tags": ["Stalk"],
+        "parameters": [{ "name": "username", "in": "query", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/tempmail/tempmail": {
+      "get": {
+        "summary": "Generate Mail V2",
+        "description": "Membuat alamat email sementara baru (V2).",
+        "tags": ["Tempmail"],
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/tools/bahlil": {
+      "get": {
+        "summary": "Brat meme bahlil",
+        "description": "Membuat meme menggunakan gambar Bahlil dengan teks kustom.",
+        "tags": ["Tools"],
+        "parameters": [{ "name": "text", "in": "query", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Image PNG" } }
+      }
+    },
+    "/tools/cloneweb": {
+      "get": {
+        "summary": "Website Cloner",
+        "description": "Mendownload source code website dalam format ZIP (cloning).",
+        "tags": ["Tools"],
+        "parameters": [{ "name": "url", "in": "query", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "File ZIP" } }
+      }
+    },
+    "/tools/ff-karakter": {
+      "get": {
+        "summary": "FF Character List Tool",
+        "description": "Menampilkan daftar lengkap karakter game Free Fire.",
+        "tags": ["Tools"],
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/v1/tools/upscale": {
+      "get": {
+        "summary": "AI Image Upscaler",
+        "description": "Meningkatkan kualitas gambar (HDR) dan resolusi secara otomatis. Output langsung berupa file gambar PNG.",
+        "tags": ["Tools"],
+        "parameters": [
+          { "name": "url", "in": "query", "required": true, "schema": { "type": "string" } },
+          { "name": "scale", "in": "query", "schema": { "type": "integer", "enum": [2, 4, 6, 8, 16], "default": 2 } },
+          { "name": "anime", "in": "query", "schema": { "type": "string", "enum": ["true", "false"], "default": "false" } }
+        ],
+        "responses": { "200": { "description": "Image PNG" } }
+      }
+    },
+    "/v1/tools/kbbi": {
+      "get": {
+        "summary": "KBBI Dictionary",
+        "description": "Mencari definisi kata baku dalam Kamus Besar Bahasa Indonesia (KBBI).",
+        "tags": ["Tools"],
+        "parameters": [{ "name": "kata", "in": "query", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/v1/tools/github": {
+      "get": {
+        "summary": "GitHub Search & Download",
+        "description": "Cari repository GitHub atau masukkan link repo untuk mendapatkan info detail dan link download ZIP.",
+        "tags": ["Tools"],
+        "parameters": [{ "name": "q", "in": "query", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/v1/tools/chord": {
+      "get": {
+        "summary": "Guitar Chord & Lyrics Finder",
+        "description": "Cari chord gitar dan lirik lagu favoritmu.",
+        "tags": ["Tools"],
+        "parameters": [{ "name": "q", "in": "query", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/v1/tools/hari-penting": {
+      "get": {
+        "summary": "Daftar Hari Penting Indonesia",
+        "description": "Menampilkan daftar lengkap hari penting, hari nasional, dan peringatan besar di Indonesia yang bersumber dari Wikipedia.",
+        "tags": ["Tools"],
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/tools/ocr": {
+      "get": {
+        "summary": "Image to Text (OCR)",
+        "description": "Mengekstrak teks dari sebuah gambar (Optical Character Recognition).",
+        "tags": ["Tools"],
+        "parameters": [{ "name": "url", "in": "query", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/tools/ssweb": {
+      "get": {
+        "summary": "Screenshot Website",
+        "description": "Mengambil tangkapan layar (screenshot) dari sebuah URL website.",
+        "tags": ["Tools"],
+        "parameters": [{ "name": "url", "in": "query", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Image Biner" } }
+      }
+    },
+    "/tools/text-replace": {
+      "get": {
+        "summary": "AI Text Replace",
+        "description": "Mengganti kata tertentu di dalam dokumen/teks melalui URL.",
+        "tags": ["Tools"],
+        "parameters": [
+          { "name": "url", "in": "query", "required": true, "schema": { "type": "string" } },
+          { "name": "find", "in": "query", "required": true, "schema": { "type": "string" } },
+          { "name": "replace", "in": "query", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/tools/translate": {
+      "get": {
+        "summary": "Google Translate",
+        "description": "Menerjemahkan teks menggunakan layanan Google Translate.",
+        "tags": ["Tools"],
+        "parameters": [
+          { "name": "text", "in": "query", "required": true, "schema": { "type": "string" } },
+          { "name": "to", "in": "query", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/tools/undress": {
+      "get": {
+        "summary": "AI Image Alter",
+        "description": "Alat manipulasi gambar (dibatasi/restricted dengan token khusus).",
+        "tags": ["Tools"],
+        "parameters": [
+          { "name": "url", "in": "query", "required": true, "schema": { "type": "string" } },
+          { "name": "token", "in": "query", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/v1/tools/planet": {
+      "get": {
+        "summary": "Full Solar System Info (Image)",
+        "description": "Mendapatkan gambar dan informasi lengkap mengenai planet di sistem tata surya.",
+        "tags": ["Tools"],
+        "parameters": [{ "name": "name", "in": "query", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Image PNG" } }
+      }
+    },
+    "/search/applemusic": {
+      "get": {
+        "summary": "Apple Music Search",
+        "description": "Mencari lagu atau album di Apple Music berdasarkan wilayah.",
+        "tags": ["Search"],
+        "parameters": [
+          { "name": "q", "in": "query", "required": true, "schema": { "type": "string" } },
+          { "name": "region", "in": "query", "required": false, "schema": { "type": "string", "default": "id" } }
+        ],
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/search/play-v2": {
+      "get": {
+        "summary": "Music Player",
+        "description": "Mencari dan memutar lagu langsung dalam format audio MP3.",
+        "tags": ["Search"],
+        "parameters": [{ "name": "q", "in": "query", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Audio MP3" } }
+      }
+    },
+    "/v1/search/sfile-search": {
+      "get": {
+        "summary": "Sfile Fast Search",
+        "description": "Cari file di sfile.co secara instan hanya dengan kata kunci.",
+        "tags": ["Search"],
+        "parameters": [{ "name": "q", "in": "query", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/v1/search/movieku": {
+      "get": {
+        "summary": "MovieKu Search & Info",
+        "description": "Cari film dan dapatkan info detail beserta link download dari MovieKu.",
+        "tags": ["Search"],
+        "parameters": [{ "name": "q", "in": "query", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/v1/search/manga": {
+      "get": {
+        "summary": "Manga & Manhwa Search Scraper",
+        "description": "Mencari daftar komik (Manga/Manhwa) dari database CosmicScans.",
+        "tags": ["Search"],
+        "parameters": [
+          { "name": "q", "in": "query", "required": true, "schema": { "type": "string" } },
+          { "name": "page", "in": "query", "schema": { "type": "integer", "default": 1 } }
+        ],
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/search/spotify": {
+      "get": {
+        "summary": "Spotify Search",
+        "description": "Mencari lagu di Spotify secara real-time langsung dari pusat (Bypass Access Token).",
+        "tags": ["Search"],
+        "parameters": [
+          { "name": "q", "in": "query", "required": true, "schema": { "type": "string" } },
+          { "name": "limit", "in": "query", "required": false, "schema": { "type": "integer", "default": 10 } }
+        ],
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/v1/search/pinterest": {
+      "get": {
+        "summary": "Pinterest Image Search",
+        "description": "Mencari koleksi gambar di platform Pinterest.",
+        "tags": ["Search"],
+        "parameters": [{ "name": "q", "in": "query", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/v1/search/ytplay": {
+      "get": {
+        "summary": "YouTube Audio Player & Downloader",
+        "description": "Mencari video YouTube dan mendapatkan metadata beserta link audionya.",
+        "tags": ["Search"],
+        "parameters": [{ "name": "text", "in": "query", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/v1/search/soundcloud": {
+      "get": {
+        "summary": "SoundCloud Search",
+        "description": "Mencari lagu di SoundCloud secara real-time. Menampilkan judul, artis, link track, dan thumbnail HD.",
+        "tags": ["Search"],
+        "parameters": [{ "name": "q", "in": "query", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/v1/search/xv": {
+      "get": {
+        "summary": "XVideo Search",
+        "description": "Fitur pencarian video pribadi (membutuhkan apikey khusus).",
+        "tags": ["Search"],
+        "parameters": [
+          { "name": "query", "in": "query", "required": true, "schema": { "type": "string" } },
+          { "name": "apikey", "in": "query", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/v1/religi/quran": {
+      "get": {
+        "summary": "List Semua Surah",
+        "description": "Mengambil daftar 114 surah dari Al-Qur'an NU Online.",
+        "tags": ["Religi"],
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/news/detik": {
+      "get": {
+        "summary": "Detik News",
+        "description": "Mengambil berita terkini dari portal berita Detik.com.",
+        "tags": ["News"],
+        "responses": { "200": { "description": "Success" } }
+      }
+    },
+    "/news/kontan": {
+      "get": {
+        "summary": "Kontan News",
+        "description": "Mengambil berita ekonomi dan bisnis terbaru dari Kontan.",
+        "tags": ["News"],
+        "responses": { "200": { "description": "Success" } }
+      }
+    }
+  }
+}
