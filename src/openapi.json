@@ -668,28 +668,7 @@
         "responses": { "200": { "description": "Success" } }
       }
     },
-    "/v2/tools/img2prompt": {
-      "get": {
-        "tags": ["Tools"],
-        "summary": "Image to Prompt",
-        "description": "Mendapatkan deskripsi/prompt dari sebuah URL gambar menggunakan AI.",
-        "parameters": [
-          { 
-            "name": "url", 
-            "in": "query", 
-            "required": true, 
-            "schema": { "type": "string" },
-            "example": "https://telegra.ph/file/abcde.jpg"
-          }
-        ],
-        "responses": { 
-          "200": { 
-            "description": "Berhasil men-generate prompt" 
-          } 
-        }
-      }
-    },
-    "/tools/ocr": {
+     "/tools/ocr": {
       "get": {
         "summary": "Image to Text (OCR)",
         "description": "Mengekstrak teks dari sebuah gambar (Optical Character Recognition).",
