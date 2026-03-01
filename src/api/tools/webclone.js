@@ -1,102 +1,71 @@
-const axios = require("axios");
+/**
+ * 🌐 Web to Zip Cloner (V2)
+ * Path: /v2/tools/webcloner
+ * Category: Tools
+ * Creator: D2:业
+ */
 
-const SaveWeb = {
-  baseURL: "https://copier.saveweb2zip.com",
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-  headers: {
-    "content-type": "application/json",
-    origin: "https://saveweb2zip.com",
-    referer: "https://saveweb2zip.com/",
-    "user-agent":
-      "Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Mobile Safari/537.36",
-  },
+async function saveweb2zip(url) {
+    const request = await fetch('https://copier.saveweb2zip.com/api/copySite', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            url,
+            renameAssets: false,
+            saveStructure: true,
+            alternativeAlgorithm: false,
+            mobileVersion: false,
+        }),
+    });
 
-  async process(targetUrl) {
-    if (!/^https?:\/\//i.test(targetUrl)) {
-      throw new Error("URL harus http/https");
-    }
+    if (!request.ok) throw new Error('API Copier Down atau URL tidak valid');
+    const { md5 } = await request.json();
 
-    try {
-      // 1️⃣ start cloning
-      const start = await axios.post(
-        `${this.baseURL}/api/copySite`,
-        {
-          url: targetUrl,
-          renameAssets: false,
-          saveStructure: false,
-          alternativeAlgorithm: false,
-          mobileVersion: false,
-        },
-        { headers: this.headers, timeout: 60000 }
-      );
+    // Polling Status (Maksimal 12 kali / 1 menit biar gak timeout di Vercel)
+    let attempts = 0;
+    while (attempts < 12) {
+        const req = await fetch('https://copier.saveweb2zip.com/api/getStatus/' + md5);
+        const res = await req.json();
 
-      const md5 = start.data?.md5;
-      if (!md5) throw new Error("Gagal inisialisasi cloning");
-
-      // 2️⃣ polling status (3-5 menit)
-      let finished = false;
-
-      for (let i = 0; i < 60; i++) {
-        const check = await axios.get(
-          `${this.baseURL}/api/getStatus/${md5}`,
-          { headers: this.headers, timeout: 30000 }
-        );
-
-        if (check.data?.isFinished) {
-          finished = true;
-          break;
+        if (res.isFinished) {
+            if (!res.success) throw new Error(res.errorText || 'Gagal cloning');
+            return {
+                md5: res.md5,
+                startedAt: res.startedAt,
+                filesCount: res.copiedFilesAmount,
+                downloadUrl: 'https://copier.saveweb2zip.com/api/downloadArchive/' + res.md5,
+            };
         }
-
-        await new Promise((r) => setTimeout(r, 5000));
-      }
-
-      if (!finished) throw new Error("Cloning timeout");
-
-      // 3️⃣ download zip
-      const download = await axios.get(
-        `${this.baseURL}/api/downloadArchive/${md5}`,
-        {
-          responseType: "arraybuffer",
-          headers: { ...this.headers, accept: "application/zip" },
-          timeout: 120000,
-        }
-      );
-
-      return {
-        buffer: Buffer.from(download.data),
-        filename: `cloned_${md5.slice(0, 8)}.zip`,
-      };
-    } catch (err) {
-      throw new Error(err.response?.data?.message || err.message);
+        
+        attempts++;
+        await delay(5000); // Tunggu 5 detik per cek
     }
-  },
-};
+    throw new Error('Proses terlalu lama, silakan cek manual nanti.');
+}
 
 module.exports = function (app) {
-  app.get("/tools/cloneweb", async (req, res) => {
-    const { url } = req.query;
+    app.get("/tools/cloneweb", async (req, res) => {
+        const { url } = req.query;
 
-    if (!url) {
-      return res
-        .status(400)
-        .json({ status: false, error: "URL target mana" });
-    }
+        if (!url) {
+            return res.status(400).json({
+                status: false,
+                creator: "D2:业",
+                message: "Masukkan URL web yang mau di-clone! Contoh: ?url=https://google.com"
+            });
+        }
 
-    try {
-      const result = await SaveWeb.process(url);
-
-      res.set({
-        "Content-Type": "application/zip",
-        "Content-Disposition": `attachment; filename="${result.filename}"`,
-        "Content-Length": result.buffer.length,
-      });
-
-      return res.send(result.buffer);
-    } catch (err) {
-      return res.status(500).json({
-        status: false,
-        error: err.message,
-      });
-    }
-  });
+        try {
+            const result = await saveweb2zip(url);
+            res.json({
+                status: true,
+                creator: "D2:业",
+                result: result
+            });
+        } catch (error) {
+            res.status(500).json({ status: false, error: error.message });
+        }
+    });
 };
