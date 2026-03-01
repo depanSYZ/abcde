@@ -682,10 +682,13 @@
             "example": "https://telegra.ph/file/abcde.jpg"
           }
         ],
-        "responses": { "200": { "description": "Berhasil men-generate prompt" } }
+        "responses": { 
+          "200": { 
+            "description": "Berhasil men-generate prompt" 
+          } 
+        }
       }
-    }
-  },
+    },
     "/tools/ocr": {
       "get": {
         "summary": "Image to Text (OCR)",
