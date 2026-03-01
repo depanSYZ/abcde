@@ -753,6 +753,25 @@
         "responses": { "200": { "description": "Audio MP3" } }
       }
     },
+    "/v2/search/buildml": {
+      "get": {
+        "tags": ["Tools"],
+        "summary": "MLBB Hero Build Search",
+        "description": "Mencari rekomendasi build item hero Mobile Legends dari database.",
+        "parameters": [
+          { 
+            "name": "hero", 
+            "in": "query", 
+            "required": true, 
+            "schema": { "type": "string" },
+            "example": "ling"
+          }
+        ],
+        "responses": { 
+          "200": { "description": "Berhasil mendapatkan data build" } 
+        }
+      }
+    },
     "/v1/search/sfile-search": {
       "get": {
         "summary": "Sfile Fast Search",
