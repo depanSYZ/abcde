@@ -3,20 +3,13 @@
   "builds": [
     {
       "src": "index.js",
-      "use": "@vercel/node",
-      "config": {
-        "maxDuration": 60,
-        "memory": 1024
-      }
+      "use": "@vercel/node"
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "/index.js"
+      "dest": "index.js"
     }
-  ],
-  "env": {
-    "NODE_ENV": "production"
-  }
+  ]
 }
