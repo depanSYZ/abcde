@@ -5,53 +5,78 @@ const os = require('os');
 const AdmZip = require('adm-zip');
 const multer = require('multer');
 
-// --- 🛠️ SETTINGAN SUNG ---
+/**
+ * 🔥 D2:业 - SURGE DEPLOYER VERCEL EDITION
+ */
+
+// Konfigurasi Multer buat simpan file di folder /tmp Vercel
+const upload = multer({ dest: os.tmpdir() });
+
 const SETTING = {
-    // CARA DAPETIN: Buka terminal di laptop, ketik 'npx surge token'. 
-    // Login sekali, trus copy string panjang yang muncul. Paste di bawah:
+    // DAPETIN TOKEN: Ketik 'npx surge token' di terminal laptop lu
     surgeToken: "5796d21b55ad39d9167d1964cf47c8a2", 
     creator: "D2:业"
 };
 
-const upload = multer({ dest: os.tmpdir() });
-
 module.exports = function (app) {
+    // Endpoint: POST /v2/tools/deploy
     app.post("/v2/tools/deploy", upload.single('file'), async (req, res) => {
-        const { domain } = req.body;
-        const file = req.file;
-
-        if (!file || !domain) return res.status(400).json({ status: false, message: "File & Domain wajib ada!" });
-
-        const targetDomain = `${domain.replace(/\s+/g, '-')}.surge.sh`;
-        const extractPath = path.join(os.tmpdir(), `d2_${Date.now()}`);
-
         try {
-            // 1. Ekstrak
+            const { domain } = req.body;
+            const file = req.file;
+
+            // 1. Validasi Input
+            if (!file || !domain) {
+                return res.status(400).json({ 
+                    status: false, 
+                    message: "Mana file ZIP-nya? Domain-nya juga isi dong, Bos! 🗿" 
+                });
+            }
+
+            // 2. Setup Jalur Aman (Wajib di /tmp buat Vercel)
+            const targetDomain = `${domain.replace(/\s+/g, '-')}.surge.sh`;
+            const extractPath = path.join(os.tmpdir(), `d2_web_${Date.now()}`);
+
+            // 3. Ekstrak ZIP ke folder temporary
             const zip = new AdmZip(file.path);
             zip.extractAllTo(extractPath, true);
 
-            // 2. Deploy (Gak pake email, cuma pake TOKEN)
-            // Perintah: npx surge [folder] [domain] --token [token]
+            // 4. Perintah Deploy Pakai NPX (Biar gak usah install global)
             const command = `npx surge ${extractPath} ${targetDomain} --token ${SETTING.surgeToken}`;
 
-            exec(command, (error, stdout) => {
-                // Cleanup
-                fs.unlinkSync(file.path);
-                fs.rmSync(extractPath, { recursive: true, force: true });
+            exec(command, (error, stdout, stderr) => {
+                // Hapus sampah file setelah proses selesai (biar gak menuhin /tmp)
+                if (fs.existsSync(file.path)) fs.unlinkSync(file.path);
+                if (fs.existsSync(extractPath)) fs.rmSync(extractPath, { recursive: true, force: true });
 
-                if (error) return res.status(500).json({ status: false, error: "Gagal! Token salah atau domain 'udah ada yang punya'." });
+                if (error) {
+                    console.error("SURGE ERROR:", stderr);
+                    return res.status(500).json({
+                        status: false,
+                        creator: SETTING.creator,
+                        message: "Deploy Gagal! Cek apakah domain sudah dipakai orang lain.",
+                        error: stderr || error.message
+                    });
+                }
 
+                // 5. Sukses! Kirim Link-nya
                 res.json({
                     status: true,
                     creator: SETTING.creator,
                     result: {
                         url: `https://${targetDomain}`,
-                        status: "Success Online! 🚀"
+                        info: "Website lu udah online, Bos! 🚀",
+                        log: stdout.split('\n').filter(line => line.includes('Success')).join(' ')
                     }
                 });
             });
+
         } catch (e) {
-            res.status(500).json({ status: false, error: e.message });
+            res.status(500).json({ 
+                status: false, 
+                creator: SETTING.creator,
+                error: "System Crash: " + e.message 
+            });
         }
     });
 };
