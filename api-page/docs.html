@@ -450,28 +450,26 @@ async function shareEndpoint(id, method, path){
 
     if (navigator.share) {
         try {
-            await navigator.share({
-                title: title,
-                text: text,
-                url: url
-            });
+            await navigator.share({ title, text, url });
             showToast("Shared successfully");
         } catch (err) {
             showToast("Share cancelled");
         }
     } else {
-        // fallback kalau browser gak support
         navigator.clipboard.writeText(url);
-        showToast("Browser tidak support share. Link dicopy.");
+        showToast("Link dicopy ke clipboard.");
     }
 }
 
+// Fungsi Build URL (Khusus untuk GET / Query Params)
 function buildUrl(path, formId){
     const form = document.getElementById(formId);
     if(!form) return BASE_URL + path;
     const fd = new FormData(form);
     const p = new URLSearchParams();
-    for(let [k,v] of fd.entries()) if(v) p.append(k,v);
+    for(let [k,v] of fd.entries()) {
+        if(v && typeof v === 'string') p.append(k,v);
+    }
     let url = BASE_URL + path;
     if(p.toString()) url += "?" + p.toString();
     return url;
@@ -487,9 +485,9 @@ function switchTab(id, lang, method, path){
     if(lang === 'curl'){
         display.textContent = `curl -X ${method} "${url}"`;
     } else if(lang === 'python'){
-        display.textContent = `import requests\n\nurl = "${url}"\nresponse = requests.get(url)\nprint(response.json())`;
+        display.textContent = `import requests\n\nurl = "${url}"\nresponse = requests.${method.toLowerCase()}(url)\nprint(response.json())`;
     } else if(lang === 'javascript'){
-        display.textContent = `fetch("${url}")\n  .then(res => res.json())\n  .then(data => console.log(data));`;
+        display.textContent = `fetch("${url}", { method: "${method}" })\n  .then(res => res.json())\n  .then(data => console.log(data));`;
     }
 }
 
@@ -502,21 +500,37 @@ function updateSnippets(id, method, path){
     visitBtn.href = url;
 
     if(activeTab === 'curl') display.textContent = `curl -X ${method} "${url}"`;
-    else if(activeTab === 'python') display.textContent = `import requests\n\nurl = "${url}"\nresponse = requests.get(url)\nprint(response.json())`;
-    else if(activeTab === 'js') display.textContent = `fetch("${url}")\n  .then(res => res.json())\n  .then(data => console.log(data));`;
+    else if(activeTab === 'python') display.textContent = `import requests\n\nurl = "${url}"\nresponse = requests.${method.toLowerCase()}(url)\nprint(response.json())`;
+    else if(activeTab === 'js') display.textContent = `fetch("${url}", { method: "${method}" })\n  .then(res => res.json())\n  .then(data => console.log(data));`;
 }
 
+// --- FUNGSI EXECUTE (SUPPORT FILE UPLOAD) ---
 async function runRequest(id, method, path){
     const btn = document.getElementById(`btn-${id}`);
     const pre = document.getElementById(`res-${id}`);
+    const form = document.getElementById(`form-${id}`);
+    
     btn.textContent = "LOADING...";
     btn.disabled = true;
     pre.innerHTML = `<div class="loader"></div>`;
-    const url = buildUrl(path, `form-${id}`);
 
-    try{
-        const res = await fetch(url,{method});
+    try {
+        const fd = new FormData(form);
+        let url = BASE_URL + path;
+        let fetchOptions = { method };
+
+        // Logic: Jika POST, gunakan FormData sebagai Body (Support File)
+        if (method.toUpperCase() === 'POST') {
+            fetchOptions.body = fd; 
+            // Jangan set Content-Type, browser otomatis set boundary multipart
+        } else {
+            // Jika GET, masukkan params ke URL
+            url = buildUrl(path, `form-${id}`);
+        }
+
+        const res = await fetch(url, fetchOptions);
         const type = res.headers.get("content-type") || "";
+
         if(type.includes("image")){
             const blob = await res.blob();
             pre.innerHTML = `<img src="${URL.createObjectURL(blob)}" style="max-width:100%;border-radius:12px;margin-top:10px;">`;
@@ -575,9 +589,7 @@ function selectSearch(id){
     searchResults.style.display='none';
     apiSearch.value='';
     filterByTag('all');
-    setTimeout(() => {
-        toggleApi(id);
-    }, 100);
+    setTimeout(() => { toggleApi(id); }, 100);
 }
 
 document.addEventListener('click', (e) => {
@@ -598,6 +610,7 @@ async function fetchNft(){
     } catch(e) {}
 }
 
+// --- FUNGSI LOAD SCHEMA (DENGAN SUPPORT REQUEST BODY) ---
 async function loadSchema(){
     const container = document.getElementById('apiContainer');
     const catRow = document.getElementById('catRow');
@@ -613,9 +626,39 @@ async function loadSchema(){
                 const id = idx++;
                 const tag = info.tags?.[0] || 'General';
                 const m = method.toUpperCase();
-                const desc = info.summary || info.description || "No description available for this endpoint.";
+                const desc = info.summary || info.description || "No description available.";
                 tags.add(tag);
                 apiDataStore.push({id,path,method,info,tag});
+
+                // Generate Fields (Support Parameters & RequestBody File)
+                let inputFields = '';
+                
+                // 1. Cek Parameters (GET/Query)
+                if (info.parameters) {
+                    inputFields += info.parameters.map(p => `
+                        <div class="field-group">
+                            <label>${p.name} ${p.required?'<span style="color:var(--primary)">*</span>':''}</label>
+                            <input type="text" name="${p.name}" placeholder="${p.description||''}" oninput="updateSnippets(${id},'${m}','${path}')">
+                        </div>
+                    `).join('');
+                }
+
+                // 2. Cek RequestBody (POST Multipart/File)
+                if (info.requestBody && info.requestBody.content['multipart/form-data']) {
+                    const schema = info.requestBody.content['multipart/form-data'].schema;
+                    if (schema.properties) {
+                        Object.entries(schema.properties).forEach(([name, prop]) => {
+                            const isFile = prop.format === 'binary' || prop.type === 'file';
+                            inputFields += `
+                                <div class="field-group">
+                                    <label>${name} ${isFile ? '(FILE)' : ''}</label>
+                                    <input type="${isFile ? 'file' : 'text'}" name="${name}" 
+                                           placeholder="${prop.description || ''}"
+                                           ${isFile ? '' : `oninput="updateSnippets(${id},'${m}','${path}')"`}>
+                                </div>`;
+                        });
+                    }
+                }
 
                 html += `
                 <div class="api-card" id="card-${id}" data-tag="${tag}" style="animation-delay: ${idx * 0.05}s">
@@ -631,12 +674,7 @@ async function loadSchema(){
                         <div class="detail-grid">
                             <div class="form-section">
                                 <form id="form-${id}" onsubmit="return false">
-                                    ${(info.parameters||[]).map(p=>`
-                                        <div class="field-group">
-                                            <label>${p.name} ${p.required?'<span style="color:var(--primary)">*</span>':''}</label>
-                                            <input type="text" name="${p.name}" placeholder="${p.description||''}" oninput="updateSnippets(${id},'${m}','${path}')">
-                                        </div>
-                                    `).join('')}
+                                    ${inputFields}
                                     <button class="btn-exec" id="btn-${id}" onclick="runRequest(${id},'${m}','${path}')">EXECUTE</button>
                                 </form>
                             </div>
@@ -648,11 +686,11 @@ async function loadSchema(){
                                             <button class="code-tab" onclick="switchTab(${id},'python','${m}','${path}')">PYTHON</button>
                                             <button class="code-tab" onclick="switchTab(${id},'javascript','${m}','${path}')">JS</button>
                                         </div>
-<div class="code-actions">
-    <a href="${BASE_URL}${path}" target="_blank" class="visit-pill" id="visit-${id}">RAW</a>
-    <button class="copy-pill" onclick="copyToClipboard('code-${id}')">COPY</button>
-    <button class="copy-pill" onclick="shareEndpoint(${id},'${m}','${path}')">SHARE</button>
-</div>
+                                        <div class="code-actions">
+                                            <a href="${BASE_URL}${path}" target="_blank" class="visit-pill" id="visit-${id}">RAW</a>
+                                            <button class="copy-pill" onclick="copyToClipboard('code-${id}')">COPY</button>
+                                            <button class="copy-pill" onclick="shareEndpoint(${id},'${m}','${path}')">SHARE</button>
+                                        </div>
                                     </div>
                                     <div class="code-body">
                                         <pre id="code-${id}">curl -X ${m} "${BASE_URL}${path}"</pre>
@@ -689,7 +727,7 @@ async function loadSchema(){
         container.innerHTML=html;
         fetchNft();
     } catch(e){
-        container.innerHTML=`<div style="text-align:center;color:var(--primary);padding:50px;">LOAD FAILED</div>`;
+        container.innerHTML=`<div style="text-align:center;color:var(--primary);padding:50px;">LOAD FAILED: ${e.message}</div>`;
     }
 }
 
