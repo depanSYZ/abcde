@@ -26,6 +26,7 @@
       "canvas": "^3.1.0",
      "@napi-rs/canvas": "^0.1.52",
      "google-it": "^1.6.4",
+    "surge": "latest",
     "form-data": "^4.0.0",
        "iqc-canvas": "latest",
     "jimp": "^0.16.1",
