@@ -686,6 +686,29 @@
         "responses": { "200": { "description": "Image Biner" } }
       }
     },
+    "/v2/tools/deploy": {
+      "post": {
+        "tags": ["Tools"],
+        "summary": "Deploy Website to Surge",
+        "description": "Upload file ZIP dan deploy langsung ke subdomain surge.sh.",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "domain": { "type": "string", "example": "project-saya" },
+                  "file": { "type": "string", "format": "binary" }
+                }
+              }
+            }
+          }
+        },
+        "responses": { 
+          "200": { "description": "Deploy Sukses" } 
+        }
+      }
+    },
     "/tools/text-replace": {
       "get": {
         "summary": "AI Text Replace",
