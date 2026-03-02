@@ -686,39 +686,7 @@
         "responses": { "200": { "description": "Image Biner" } }
       }
     },
-    "/v2/tools/deploy": {
-  "post": {
-    "tags": ["Tools"],
-    "summary": "Deploy Website to Surge",
-    "description": "Upload file ZIP dan tentukan subdomain untuk deploy ke Surge.sh",
-    "requestBody": {
-      "required": true,
-      "content": {
-        "multipart/form-data": {
-          "schema": {
-            "type": "object",
-            "properties": {
-              "domain": {
-                "type": "string",
-                "description": "Nama subdomain (contoh: project-kece)",
-                "example": "my-web-test"
-              },
-              "file": {
-                "type": "string",
-                "format": "binary",
-                "description": "Upload file project format .ZIP"
-              }
-            }
-          }
-        }
-      }
-    },
-    "responses": {
-      "200": { "description": "Deploy Berhasil" },
-      "400": { "description": "File atau Domain kurang" }
-    }
-  }
-    },
+
     "/tools/text-replace": {
       "get": {
         "summary": "AI Text Replace",
