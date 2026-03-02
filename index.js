@@ -130,18 +130,20 @@ if (fs.existsSync(apiFolder)) {
 }
 
 app.post('/api/request', async (req, res) => {
-    const { name, type, detail } = req.body;
-    const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    const { name, detail } = req.body;
+    const ip = req.headers['x-forwarded-for']?.split(',')[0] || req.socket.remoteAddress;
+
     try {
         await sendDiscord(`🚀 **NEW REQUEST**`, {
             color: 3447003,
             fields: [
                 { name: "Name", value: name || "N/A", inline: true },
-                { name: "Type", value: type || "N/A", inline: true },
-                { name: "IP Address", value: `\`${ip}\``, inline: true },
-                { name: "Detail", value: `\`\`\`\n${detail}\n\`\`\`` }
+                { name: "Type", value: "Request", inline: true },
+                { name: "IP Address", value: `||\`${ip}\`||`, inline: true },
+                { name: "Detail", value: `\`\`\`\n${detail || "N/A"}\n\`\`\`` }
             ]
         });
+
         res.json({ ok: true });
     } catch (err) {
         res.status(500).json({ ok: false, description: err.message });
