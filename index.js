@@ -3,7 +3,7 @@ const chalk = require("chalk");
 const fs = require("fs");
 const cors = require("cors");
 const path = require("path");
-const fileUpload = require("express-fileupload");
+const multer = require("multer");
 const axios = require("axios");
 require("dotenv").config();
 
