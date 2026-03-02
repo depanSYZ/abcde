@@ -687,27 +687,37 @@
       }
     },
     "/v2/tools/deploy": {
-      "post": {
-        "tags": ["Tools"],
-        "summary": "Deploy Website to Surge",
-        "description": "Upload file ZIP dan deploy langsung ke subdomain surge.sh.",
-        "requestBody": {
-          "content": {
-            "multipart/form-data": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "domain": { "type": "string", "example": "project-saya" },
-                  "file": { "type": "string", "format": "binary" }
-                }
+  "post": {
+    "tags": ["Tools"],
+    "summary": "Deploy Website to Surge",
+    "description": "Upload file ZIP dan tentukan subdomain untuk deploy ke Surge.sh",
+    "requestBody": {
+      "required": true,
+      "content": {
+        "multipart/form-data": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "domain": {
+                "type": "string",
+                "description": "Nama subdomain (contoh: project-kece)",
+                "example": "my-web-test"
+              },
+              "file": {
+                "type": "string",
+                "format": "binary",
+                "description": "Upload file project format .ZIP"
               }
             }
           }
-        },
-        "responses": { 
-          "200": { "description": "Deploy Sukses" } 
         }
       }
+    },
+    "responses": {
+      "200": { "description": "Deploy Berhasil" },
+      "400": { "description": "File atau Domain kurang" }
+    }
+  }
     },
     "/tools/text-replace": {
       "get": {
